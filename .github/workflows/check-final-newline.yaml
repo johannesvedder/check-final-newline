@@ -13,7 +13,6 @@ jobs:
         fetch-depth: 0
 
     - name: Check final newline
-      uses: johannesvedder/check-final-newline@dev
+      uses: johannesvedder/check-final-newline@main
       with:
         commit_changes: 'true'
-        commit_name: 'Testbot'
