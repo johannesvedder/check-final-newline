@@ -32,6 +32,7 @@ jobs:
       - name: Check final newline
         uses: johannesvedder/check-final-newline@main
         with:
+        fail_on_missing_newline: 'true'
         commit_changes: 'true'
         commit_branch: ${{ github.head_ref }} # Dynamically set to the head ref of the PR
         commit_name: 'Linter'

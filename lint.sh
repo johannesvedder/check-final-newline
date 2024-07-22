@@ -1,11 +1,12 @@
 #!/bin/sh -l
 
 MODIFIED=0
-SHOULD_COMMIT=$1 # Accept the commit_changes argument
-BRANCH_NAME=$2 # Accept the commit_branch argument
-USER_NAME=$3 # Accept the commit_name argument
-USER_EMAIL=$4 # Accept the commit_email argument
-COMMIT_MSG=$5 # Accept the commit_message argument
+FAIL_ON_ERROR=$1
+SHOULD_COMMIT=$2 # Accept the commit_changes argument
+BRANCH_NAME=$3 # Accept the commit_branch argument
+USER_NAME=$4 # Accept the commit_name argument
+USER_EMAIL=$5 # Accept the commit_email argument
+COMMIT_MSG=$6 # Accept the commit_message argument
 
 git config --global --add safe.directory /github/workspace
 
@@ -34,8 +35,7 @@ if [ $MODIFIED -eq 1 ]; then
     git add .
     git commit -m "$COMMIT_MSG"
     git push origin "$BRANCH_NAME"
-  else
-    # Exit with error if SHOULD_COMMIT is not true
+  elif [ "$FAIL_ON_ERROR" = "true" ]; then
     exit 1
   fi
 fi

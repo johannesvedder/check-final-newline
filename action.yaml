@@ -1,6 +1,10 @@
 name: 'Check final newline'
 description: 'Check if all text files in the repository end with a newline'
 inputs:
+  fail_on_missing_newline:
+    description: 'Whether to fail if a file is missing a newline or not'
+    required: false
+    default: 'true'
   commit_changes:
     description: 'Whether to commit changes or not'
     required: false
@@ -25,6 +29,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
+    - "${{ inputs.fail_on_missing_newline }}"
     - "${{ inputs.commit_changes }}"
     - "${{ inputs.commit_branch }}"
     - "${{ inputs.commit_name }}"
