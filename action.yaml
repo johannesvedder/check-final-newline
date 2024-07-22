@@ -1,8 +1,35 @@
 name: 'Check final newline'
 description: 'Check if all text files in the repository end with a newline'
+inputs:
+  commit_changes:
+    description: 'Whether to commit changes or not'
+    required: false
+    default: 'false'
+  commit_branch:
+    description: "Name of the branch where changes should be pushed to. This input is necessary on `pull_request` event"
+    required: false
+    default: ${{ github.ref }}
+  commit_name:
+    description: 'Name to use for commits. If not provided, a default is used.'
+    required: false
+    default: 'Linter Action'
+  commit_email:
+    description: 'Email to use for commits. If not provided, a default is used.'
+    required: false
+    default: 'linter-action@noreply.github.com'
+  commit_message:
+    description: 'Commit message to use when changes are committed. If not provided, a default is used.'
+    required: false
+    default: 'chore: Append newline to end of file'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - "${{ inputs.commit_changes }}"
+    - "${{ inputs.commit_branch }}"
+    - "${{ inputs.commit_name }}"
+    - "${{ inputs.commit_email }}"
+    - "${{ inputs.commit_message }}"
 branding:
   icon: 'arrow-up-left'
   color: 'green'

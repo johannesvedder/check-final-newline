@@ -1,18 +1,41 @@
 #!/bin/sh -l
 
-ERRORS=0
+MODIFIED=0
+SHOULD_COMMIT=$1 # Accept the commit_changes argument
+BRANCH_NAME=$2 # Accept the commit_branch argument
+USER_NAME=$3 # Accept the commit_name argument
+USER_EMAIL=$4 # Accept the commit_email argument
+COMMIT_MSG=$5 # Accept the commit_message argument
 
 git config --global --add safe.directory /github/workspace
 
-for f in $(git grep -Il '')
-do
-  if [[ $(tail -c 1 $f) ]]; then
-    echo $f
-    ERRORS=1
+# Optionally set user.email and user.name if provided
+if [ -n "$USER_EMAIL" ]; then
+  git config --global user.email "$USER_EMAIL"
+fi
+
+if [ -n "$USER_NAME" ]; then
+  git config --global user.name "$USER_NAME"
+fi
+
+# Check each file and append a newline if missing
+for f in $(git grep -Il ''); do
+  if [ "$(tail -c 1 "$f")" ]; then
+    echo "$f"
+    echo "" >> "$f" # Append newline
+    MODIFIED=1
   fi
 done
 
-if [ $ERRORS -eq 1 ]; then
-  echo "Files above have no newline at the end."
-  exit 1
+# Check if any file was modified
+if [ $MODIFIED -eq 1 ]; then
+  # If SHOULD_COMMIT is true, commit the changes
+  if [ "$SHOULD_COMMIT" = "true" ]; then
+    git add .
+    git commit -m "$COMMIT_MSG"
+    git push origin "$BRANCH_NAME"
+  else
+    # Exit with error if SHOULD_COMMIT is not true
+    exit 1
+  fi
 fi
